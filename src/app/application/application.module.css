@@ -60,3 +60,30 @@
     /* 悬停时文字使用强调色 */
     border-color: var(--theme-text-light);
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        /* 调整容器内边距 */
+    }
+
+    .title {
+        font-size: 2rem;
+        /* 调整标题字号 */
+        margin-bottom: 20px;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+        /* 调整副标题字号 */
+        margin-bottom: 15px;
+    }
+
+    .applyButton {
+        padding: 12px 25px;
+        /* 调整按钮内边距 */
+        font-size: 1.1rem;
+        /* 调整按钮字号 */
+        margin-top: 20px;
+    }
+}
