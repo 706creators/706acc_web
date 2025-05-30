@@ -1,0 +1,67 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--theme-bg-dark);
+    /* 整体页面深色背景 */
+    font-family: var(--font-pixelated);
+    /* 应用基础等宽字体 */
+}
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    /* 防止侧边栏在内容过多时被压缩 */
+    background-color: var(--theme-bg-light);
+    /* 侧边栏浅色背景 */
+    padding: 20px;
+    border-right: 3px solid var(--theme-accent);
+    /* 强调色边框 */
+    color: var(--theme-text-dark);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebarTitle {
+    font-size: 2rem;
+    /* 增大标题字号 */
+    margin-bottom: 30px;
+    color: var(--theme-accent);
+    /* 强调色标题 */
+    font-weight: bold;
+    text-align: center;
+}
+
+.navList {
+    list-style: none;
+    padding: 0;
+}
+
+.navItem a {
+    /* 确保样式应用到 Link 组件内的 a 标签 */
+    display: block;
+    margin-bottom: 15px;
+    cursor: pointer;
+    color: var(--theme-text-dark);
+    font-size: 1.1rem;
+    padding: 8px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.navItem a:hover {
+    color: var(--theme-bg-light);
+    background-color: var(--theme-accent);
+    /* 悬停时用强调色背景 */
+}
+
+.mainContent {
+    flex-grow: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    /* 区域之间的间隙 */
+    overflow-y: auto;
+    /* 如果内容超出，允许垂直滚动 */
+}
