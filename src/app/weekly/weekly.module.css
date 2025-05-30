@@ -77,3 +77,34 @@
     background-color: var(--theme-text-light);
     color: var(--theme-accent);
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        /* 调整容器内边距 */
+    }
+
+    .pageTitle {
+        font-size: 1.8rem;
+        /* 调整页面标题字号 */
+        margin-bottom: 20px;
+    }
+
+    .videoSection {
+        padding: 15px;
+        /* 调整视频区域内边距 */
+        margin-bottom: 20px;
+    }
+
+    .videoSourceTitle {
+        font-size: 1.3rem;
+        /* 调整视频来源标题字号 */
+    }
+
+    .externalLink {
+        padding: 8px 16px;
+        /* 调整外部链接按钮内边距 */
+        font-size: 1rem;
+        /* 调整外部链接按钮字号 */
+    }
+}

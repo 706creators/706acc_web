@@ -159,6 +159,55 @@ a.secondary {
     align-items: center;
     justify-content: center;
   }
+
+  /* 新增针对 heroSection 和 brandsSection 的响应式样式 */
+  .heroSection,
+  .brandsSection {
+    padding: 20px;
+    /* 减小内边距 */
+  }
+
+  .heroTitle {
+    font-size: 1.8rem;
+    /* 调整标题字号 */
+  }
+
+  .heroSubtitle {
+    font-size: 1.1rem;
+    /* 调整副标题字号 */
+    margin-bottom: 20px;
+  }
+
+  .applyButton {
+    padding: 10px 20px;
+    /* 调整按钮内边距 */
+    font-size: 1rem;
+    /* 调整按钮字号 */
+  }
+
+  .brandsTitle {
+    font-size: 1.5rem;
+    /* 调整品牌标题字号 */
+  }
+
+  .brandLogosContainer {
+    gap: 15px;
+    /* 减小 logo 之间的间距 */
+  }
+
+  .brandLogoItem {
+    width: 100px;
+    /* 减小 logo 项宽度 */
+    height: 60px;
+    /* 减小 logo 项高度 */
+    padding: 10px;
+  }
+
+  .brandLogoItem img {
+    max-width: 80px;
+    /* 确保图片在容器内 */
+    max-height: 40px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

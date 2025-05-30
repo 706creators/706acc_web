@@ -33,3 +33,17 @@
     /* 轻微圆角 */
     /* 你可以添加更多样式，比如外边距等 */
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        /* 调整容器内边距 */
+    }
+
+    .summaryText {
+        font-size: 1.2rem;
+        /* 调整摘要文字字号 */
+        padding: 15px;
+        /* 调整摘要文字内边距 */
+    }
+}

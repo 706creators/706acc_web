@@ -72,3 +72,19 @@
     color: var(--theme-bg-dark);
 }
 */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        /* 调整容器内边距 */
+    }
+
+    .outputItem {
+        font-size: 1.5rem;
+        /* 调整列表项字号 */
+        padding: 12px;
+        /* 调整列表项内边距 */
+        margin-bottom: 15px;
+        /* 调整列表项间距 */
+    }
+}
