@@ -1,0 +1,74 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* 内容左对齐 */
+    justify-content: flex-start;
+    /* 内容从顶部开始 */
+    min-height: 100vh;
+    padding: 40px;
+    /* 根据需要调整内边距 */
+    background-color: var(--theme-bg-dark);
+    /* 应用深色背景 */
+    font-family: var(--font-pixelated);
+    /* 应用像素字体 */
+    color: var(--theme-text-light);
+    /* 默认文字使用浅色 */
+}
+
+.outputList {
+    list-style: none;
+    /* 移除默认列表样式 */
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    /* 让列表占据可用宽度 */
+}
+
+.outputItem {
+    font-size: 1.8rem;
+    /* 增大字体以匹配设计感 */
+    color: var(--theme-text-light);
+    /* 使用浅色文字 */
+    margin-bottom: 20px;
+    /* 项目之间的间距 */
+    padding: 15px;
+    /* 为每个项目添加一些内边距 */
+    border: 2px solid var(--theme-border);
+    /* 添加边框，使用强调色 */
+    border-radius: 4px;
+    /* 轻微圆角 */
+    background-color: var(--theme-card-bg);
+    /* 使用卡片背景色 */
+    transition: background-color 0.2s, color 0.2s;
+    cursor: default;
+    /* 如果它们不是链接，则为默认光标 */
+}
+
+.outputItem:hover {
+    background-color: var(--theme-accent);
+    /* 悬停时改变背景色为强调色 */
+    color: var(--theme-bg-dark);
+    /* 悬停时文字颜色变为深色 */
+}
+
+/* 如果 outputItem 将来会变成链接 (<a> 标签)，可以添加以下样式 */
+/*
+.outputItemLink {
+    display: block;
+    text-decoration: none;
+    font-size: 1.8rem;
+    color: var(--theme-text-light);
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 2px solid var(--theme-border);
+    border-radius: 4px;
+    background-color: var(--theme-card-bg);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.outputItemLink:hover {
+    background-color: var(--theme-accent);
+    color: var(--theme-bg-dark);
+}
+*/

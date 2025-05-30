@@ -1,0 +1,65 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* 新增的设计主题颜色变量 */
+  --theme-bg-light: #E0D6B5;
+  /* 米色背景 (来自设计稿) */
+  --theme-bg-dark: #2A2F45;
+  /* 深蓝/近黑背景 (来自设计稿) */
+  --theme-card-bg: #3D4460;
+  /* 卡片内容区域深蓝背景 (来自设计稿) */
+  --theme-text-dark: #2A2F45;
+  /* 深色文字 (用于浅色背景) */
+  --theme-text-light: #E0D6B5;
+  /* 浅色文字 (用于深色背景) */
+  --theme-accent: #D97C56;
+  /* 橙色强调色 (来自设计稿) */
+  --theme-border: #D97C56;
+  /* 边框强调色 */
+  --font-pixelated: "Courier New", Courier, monospace;
+  /* 后备像素/等宽字体 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    /* 你也可以在这里为暗黑模式重新定义主题颜色变量，如果需要的话 */
+    /* 例如:
+    --theme-bg-light: #some-dark-theme-light-bg;
+    --theme-bg-dark: #some-dark-theme-dark-bg;
+    */
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
