@@ -1,5 +1,5 @@
 import styles from './community.module.css'; // 我们将为此页面创建新的样式
-import Link from 'next/link'; // 如果这些项需要链接到其他地方
+// import Link from 'next/link'; // 如果这些项需要链接到其他地方
 
 export default function CommunityPage() {
     return (
