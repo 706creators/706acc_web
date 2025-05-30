@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+    background-color: var(--theme-bg-dark);
+    /* 应用深色背景 */
+    color: var(--theme-text-light);
+    /* 默认文字使用浅色 */
+    font-family: var(--font-pixelated);
+    /* 应用像素字体 */
+}
+
+.title {
+    font-size: 2.5rem;
+    /* 调整字号以匹配设计感 */
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: var(--theme-accent);
+    /* 使用强调色 */
+}
+
+.subtitle {
+    font-size: 1.8rem;
+    /* 调整字号 */
+    margin-bottom: 20px;
+    color: var(--theme-text-light);
+    /* 使用浅色文字 */
+    line-height: 1.5;
+}
+
+.applyButton {
+    padding: 15px 35px;
+    /* 增大内边距 */
+    font-size: 1.3rem;
+    /* 增大字号 */
+    color: var(--theme-text-dark);
+    /* 深色文字 */
+    background-color: var(--theme-accent);
+    /* 使用强调色作为背景 */
+    border: 2px solid var(--theme-accent);
+    /* 边框也使用强调色或无边框 */
+    border-radius: 4px;
+    /* 较小的圆角以匹配像素风格 */
+    cursor: pointer;
+    margin-top: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    /* 大写以增加复古感 */
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.applyButton:hover {
+    background-color: var(--theme-text-light);
+    /* 悬停时使用浅色背景 */
+    color: var(--theme-accent);
+    /* 悬停时文字使用强调色 */
+    border-color: var(--theme-text-light);
+}

@@ -1,0 +1,293 @@
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-family: var(--font-geist-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  grid-row-start: 2;
+}
+
+.main ol {
+  font-family: var(--font-geist-mono);
+  padding-left: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  list-style-position: inside;
+}
+
+.main li:not(:last-of-type) {
+  margin-bottom: 8px;
+}
+
+.main code {
+  font-family: inherit;
+  background: var(--gray-alpha-100);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.ctas {
+  display: flex;
+  gap: 16px;
+}
+
+.ctas a {
+  appearance: none;
+  border-radius: 128px;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+a.primary {
+  background: var(--foreground);
+  color: var(--background);
+  gap: 8px;
+}
+
+a.secondary {
+  border-color: var(--gray-alpha-200);
+  min-width: 158px;
+}
+
+.footer {
+  grid-row-start: 3;
+  display: flex;
+  gap: 24px;
+}
+
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer img {
+  flex-shrink: 0;
+}
+
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  a.primary:hover {
+    background: var(--button-primary-hover);
+    border-color: transparent;
+  }
+
+  a.secondary:hover {
+    background: var(--button-secondary-hover);
+    border-color: transparent;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 32px;
+    padding-bottom: 80px;
+  }
+
+  .main {
+    align-items: center;
+  }
+
+  .main ol {
+    text-align: center;
+  }
+
+  .ctas {
+    flex-direction: column;
+  }
+
+  .ctas a {
+    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  a.secondary {
+    min-width: auto;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: invert();
+  }
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--theme-bg-dark);
+  /* 整体页面深色背景 */
+  font-family: var(--font-pixelated);
+  /* 应用基础等宽字体 */
+}
+
+.sidebar {
+  width: 250px;
+  background-color: var(--theme-bg-light);
+  /* 侧边栏浅色背景 */
+  padding: 20px;
+  border-right: 3px solid var(--theme-accent);
+  /* 强调色边框 */
+  color: var(--theme-text-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarTitle {
+  font-size: 2rem;
+  /* 增大标题字号 */
+  margin-bottom: 30px;
+  color: var(--theme-accent);
+  /* 强调色标题 */
+  font-weight: bold;
+  text-align: center;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+}
+
+.navItem a {
+  /* 确保样式应用到 Link 组件内的 a 标签 */
+  display: block;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: var(--theme-text-dark);
+  font-size: 1.1rem;
+  padding: 8px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navItem a:hover {
+  color: var(--theme-bg-light);
+  background-color: var(--theme-accent);
+  /* 悬停时用强调色背景 */
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  /* 区域之间的间隙 */
+}
+
+.heroSection,
+.brandsSection {
+  background-color: var(--theme-card-bg);
+  /* 卡片式深色背景 */
+  padding: 25px;
+  border: 2px solid var(--theme-border);
+  /* 强调色边框 */
+  border-radius: 8px;
+  /* 轻微圆角 */
+  color: var(--theme-text-light);
+  /* 浅色文字 */
+}
+
+.heroTitle {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  color: var(--theme-accent);
+  /* 强调色 */
+  font-weight: bold;
+}
+
+.heroSubtitle {
+  font-size: 1.3rem;
+  margin-bottom: 25px;
+  color: var(--theme-text-light);
+  line-height: 1.6;
+}
+
+.applyButton {
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  color: var(--theme-bg-dark);
+  /* 深色文字 */
+  background-color: var(--theme-accent);
+  /* 强调色背景 */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  /* 大写以增加复古感 */
+  transition: background-color 0.2s;
+}
+
+.applyButton:hover {
+  background-color: var(--theme-text-light);
+  /* 悬停时改变背景 */
+  color: var(--theme-accent);
+}
+
+.brandsTitle {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: var(--theme-accent);
+  /* 强调色 */
+  font-weight: bold;
+}
+
+/* 你可以在这里为合作品牌的 logos 添加样式 */
+/* 例如，如果它们是图片，可以考虑添加边框或滤镜来匹配风格 */
