@@ -62,7 +62,7 @@ export default function Component() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-md">
         {/* 左侧 Logo和导航 */}
         <div className="flex items-center space-x-6">
-          <div className="text-white text-lg font-bold">706ACC</div>
+          <div className="text-white text-lg font-bold">706/acc</div>
           <div className="flex space-x-4">
             <button 
               className="text-white hover:bg-white/10 px-3 py-1 rounded-sm"
@@ -214,7 +214,7 @@ export default function Component() {
             </svg>
           </button>
           
-          <div className="text-white/70 text-sm hidden md:block">706ACC the a16z</div>
+          <div className="text-white/70 text-sm hidden md:block">COME HERE AND FIND YOURSELF</div>
           
           {/* 主题切换按钮 */}
           <button 
