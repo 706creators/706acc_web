@@ -58,7 +58,7 @@ export default function Component() {
 
   return (
     <div className="relative min-h-screen bg-black">
-      {/* 导航栏代码保持不变 */}
+      {/* 导航栏 */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-md">
         {/* 左侧 Logo和导航 */}
         <div className="flex items-center space-x-6">
@@ -86,20 +86,122 @@ export default function Component() {
         </div>
         
         {/* 中间搜索框 */}
-        <div className="flex-1 max-w-md mx-4">
+        <div className="flex-1 max-w-md mx-4 relative">
           <button 
-            className="flex items-center justify-between w-full rounded-md bg-white/10 px-4 py-2"
-            onClick={() => setShowPressModal(true)}
+            className={`flex items-center justify-between w-full rounded-md px-4 py-2 transition-all duration-200 ${
+              showPressModal 
+                ? 'bg-white/20 border-white/30 border' 
+                : 'bg-white/10 hover:bg-white/15'
+            }`}
+            onClick={() => setShowPressModal(!showPressModal)}
           >
             <span className="text-white/70">Press</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className={`transition-transform duration-200 ${showPressModal ? 'rotate-45' : ''}`}
+            >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </button>
+          
+          {/* Press 下拉展开内容 */}
+          <div 
+            className={`absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top ${
+              showPressModal 
+                ? 'opacity-100 scale-100 translate-y-0' 
+                : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+            }`}
+          >
+            <div className="p-6">
+              {/* 标题区域 */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Latest from 706ACC</h3>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
+              
+              {/* Twitter推文卡片 */}
+              <div 
+                className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
+                onClick={() => window.open(tweetInfo.url, '_blank')}
+              >
+                {/* 推文头部 */}
+                <div className="flex items-center p-4 border-b border-gray-50">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 mr-3 flex items-center justify-center">
+                    <img 
+                      src={tweetInfo.userImage} 
+                      alt={tweetInfo.user}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900 flex items-center">
+                      {tweetInfo.user}
+                      <svg className="ml-1 text-blue-500" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z" />
+                      </svg>
+                    </div>
+                    <div className="text-gray-500 text-sm">@{tweetInfo.user} · {tweetInfo.date}</div>
+                  </div>
+                  <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7"></line>
+                      <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                  </div>
+                </div>
+                
+                {/* 推文内容 */}
+                <div className="p-4">
+                  <p className="text-gray-800 text-sm leading-relaxed">{tweetInfo.text}</p>
+                </div>
+                
+                {/* 推文预览图 - 简化版 */}
+                <div className="h-32 bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center border-t border-gray-50">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium text-gray-700">Click to view full post</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* 底部链接 */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">More updates on</span>
+                  <button 
+                    className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+                    onClick={() => window.open('https://x.com/labs706', '_blank')}
+                  >
+                    Twitter
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                      <line x1="7" y1="17" x2="17" y2="7"></line>
+                      <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
-        {/* 右侧链接和信息，代码保持不变 */}
+        {/* 右侧链接和信息 */}
         <div className="flex items-center space-x-6">
           <button 
             className="text-white hover:underline flex items-center"
@@ -127,114 +229,56 @@ export default function Component() {
         </div>
       </nav>
 
+      {/* 点击外部区域关闭下拉菜单 */}
+      {showPressModal && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowPressModal(false)}
+        />
+      )}
+
       {/* 半透明遮罩层 - 调低透明度 */}
       <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-black/30' : 'bg-gray-500/20'}`} />
 
-      {/* 重新设计的Press模态框 */}
-      {showPressModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowPressModal(false)}></div>
-          <div className="bg-white text-black w-full max-w-xl max-h-[80vh] overflow-y-auto rounded-md relative z-10">
-            {/* 头部 */}
-            <div className="flex justify-between items-center p-4 border-b border-gray-100">
-              <h2 className="text-xl font-medium">Press</h2>
-              <button onClick={() => setShowPressModal(false)} className="p-1 hover:bg-gray-100 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-            
-            {/* Twitter推文预览 - 类似YouTube预览 */}
-            <div className="p-5">
-              <div 
-                className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer transition-all hover:shadow-lg"
-                onClick={() => window.open(tweetInfo.url, '_blank')}
-              >
-                {/* 推文头部 */}
-                <div className="flex items-center p-4 border-b border-gray-100">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 mr-3 flex items-center justify-center">
-                    <img 
-                      src={tweetInfo.userImage} 
-                      alt={tweetInfo.user}
-                      className="w-8 h-8 object-contain"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <div className="font-bold flex items-center">
-                      {tweetInfo.user}
-                      <svg className="ml-1 text-blue-500" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z" />
-                      </svg>
-                    </div>
-                    <div className="text-gray-500 text-sm">@{tweetInfo.user}</div>
-                  </div>
-                </div>
-                
-                {/* 推文内容 */}
-                <div className="p-4">
-                  <p className="text-gray-800 mb-2">{tweetInfo.text}</p>
-                  <p className="text-gray-500 text-sm">{tweetInfo.date}</p>
-                </div>
-                
-                {/* 推文预览图 - 使用渐变背景模拟 */}
-                <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/50 to-transparent text-white">
-                    <p className="font-medium">点击查看完整推文</p>
-                  </div>
-                </div>
-                
-                {/* 推文底部 */}
-                <div className="flex items-center justify-between p-4 border-t border-gray-100">
-                  <div className="text-gray-500 text-sm">来自 Twitter</div>
-                  <div className="flex items-center text-blue-500">
-                    <span className="mr-1">查看原文</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7"></line>
-                      <polyline points="7 7 17 7 17 17"></polyline>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 背景图像渲染部分 */}
+      {/* 背景图像渲染部分 - 简洁优雅版本 */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="grid grid-rows-5 gap-1 p-1 h-full opacity-40">
-          {backgroundImageRows.map((row, rowIndex) => (
-            <div key={`row-${rowIndex}`} className="flex gap-1 w-full h-full">
-              {row.map((image, imageIndex) => (
-                <div 
+        {/* 主背景网格 - 使用更规整的布局 */}
+        <div className="absolute inset-0 opacity-25">
+          <div className="grid grid-cols-8 gap-3 p-6 h-full">
+            {backgroundImageRows.flat().slice(0, 24).map((image, index) => {
+              // 定义3种不同的卡片尺寸，创造节奏感
+              const sizeVariants = [
+                'col-span-2 row-span-2', // 大卡片
+                'col-span-1 row-span-2', // 竖直卡片
+                'col-span-2 row-span-1', // 横向卡片
+              ];
+              
+              // 根据位置分配不同尺寸，创造有序的视觉层次
+              const getSizeClass = (idx) => {
+                if (idx % 8 === 0 || idx % 8 === 3) return sizeVariants[0]; // 大卡片
+                if (idx % 8 === 1 || idx % 8 === 6) return sizeVariants[1]; // 竖直卡片
+                return sizeVariants[2]; // 横向卡片
+              };
+              
+              return (
+                <div
                   key={image.id}
-                  className={`flex-1 relative overflow-hidden rounded-sm flex h-full ${
-                    imageIndex === 0 || imageIndex === row.length - 1 
-                      ? 'items-stretch justify-start' 
-                      : 'items-center justify-center'
-                  }`}
+                  className={`${getSizeClass(index)} relative overflow-hidden rounded-lg group transition-all duration-500 ease-out hover:scale-105 hover:z-10`}
+                  style={{
+                    animation: `fadeInUp 0.8s ease-out ${index * 0.1}s both`
+                  }}
                 >
+                  {/* 卡片背景和边框 */}
+                  <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg" />
+                  
+                  {/* 悬浮时的渐变覆盖 */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* 图片 */}
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className={`h-full object-contain ${
-                      imageIndex === 0 || imageIndex === row.length - 1 
-                        ? 'w-full object-cover' 
-                        : 'w-4/5'
-                    }`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       if (target.src.endsWith('.jpg')) {
@@ -242,12 +286,102 @@ export default function Component() {
                       }
                     }}
                   />
+                  
+                  {/* 悬浮时的光晕边框 */}
+                  <div className="absolute inset-0 ring-1 ring-white/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-              ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 背景装饰元素 - 更少更精致 */}
+        <div className="absolute inset-0 opacity-15">
+          {/* 大型浮动卡片作为背景层 */}
+          {[2, 8, 15, 22].map((imageIndex, i) => (
+            <div
+              key={`bg-card-${imageIndex}`}
+              className="absolute rounded-xl overflow-hidden backdrop-blur-md bg-white/5 border border-white/10"
+              style={{
+                width: `${200 + i * 30}px`,
+                height: `${120 + i * 20}px`,
+                top: `${20 + i * 25}%`,
+                right: `${10 + i * 15}%`,
+                transform: `rotate(${-5 + i * 3}deg)`,
+                animation: `gentleFloat 8s ease-in-out infinite`,
+                animationDelay: `${i * 2}s`
+              }}
+            >
+              <img
+                src={`/${imageIndex}.jpg`}
+                alt={`Background ${imageIndex}`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (target.src.endsWith('.jpg')) {
+                    target.src = target.src.replace('.jpg', '.png');
+                  }
+                }}
+              />
             </div>
           ))}
         </div>
+
+        {/* 几何装饰元素 */}
+        <div className="absolute inset-0 opacity-10">
+          {/* 简洁的几何线条 */}
+          <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          <div className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          
+          {/* 角落的装饰圆点 */}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={`dot-${i}`}
+              className="absolute w-2 h-2 bg-white/30 rounded-full"
+              style={{
+                top: `${10 + i * 15}%`,
+                left: `${5 + (i % 2) * 90}%`,
+                animation: `pulse 4s ease-in-out infinite`,
+                animationDelay: `${i * 0.5}s`
+              }}
+            />
+          ))}
+        </div>
       </div>
+
+      {/* 自定义CSS动画 */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes gentleFloat {
+          0%, 100% {
+            transform: translateY(0px) rotate(-5deg);
+          }
+          50% {
+            transform: translateY(-15px) rotate(-3deg);
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.2);
+          }
+        }
+      `}</style>
 
       {/* 中央内容 */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-white">
