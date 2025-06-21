@@ -6,6 +6,9 @@ import { useTheme } from "next-themes";
 export default function Component() {
   const [mounted, setMounted] = useState(false);
   const [showPressModal, setShowPressModal] = useState(false);
+  const [showIdeationModal, setShowIdeationModal] = useState(false);
+  const [showStarterModal, setShowStarterModal] = useState(false);
+  const [showTooltip, setShowTooltip] = useState('');
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -56,6 +59,53 @@ export default function Component() {
     url: "https://x.com/Labs706/status/1922238801264706002"
   };
 
+  // Ideation文章信息
+  const ideationArticles = [
+    {
+      id: 1,
+      title: "创新思维的培养与实践",
+      excerpt: "探讨如何在现代社会中培养创新思维，从理论到实践的全面指南...",
+      date: "2024-05-10",
+      readTime: "8 分钟阅读",
+      url: "https://mp.weixin.qq.com/s/A2sSkByrrK8JXQ_DTbF6YQ",
+      tag: "思维方法"
+    },
+    {
+      id: 2,
+      title: "设计思维在产品开发中的应用",
+      excerpt: "深入分析设计思维如何改变传统产品开发流程，提升用户体验...",
+      date: "2024-05-03",
+      readTime: "6 分钟阅读",
+      url: "https://mp.weixin.qq.com/s/JTbVZNd219TrbU_S7nBVhw",
+      tag: "产品设计"
+    },
+    {
+      id: 3,
+      title: "数字化时代的创新策略",
+      excerpt: "解析数字化转型背景下的创新策略制定与执行要点...",
+      date: "2024-04-28",
+      readTime: "10 分钟阅读",
+      url: "https://mp.weixin.qq.com/s/oZT9p0H7BAIZNr_e9MiOhg",
+      tag: "数字化"
+    }
+  ];
+
+  // 模块介绍信息
+  const moduleDescriptions = {
+    weekly: {
+      title: "WEEKLY",
+      description: "学以致用，工具即能力。每周掌握一个前沿工具，用技能加速从想法到实现的全过程。"
+    },
+    ideation: {
+      title: "IDEATION", 
+      description: "激发想法，连接观点。每周夜谈式讨论，聚焦前沿趋势与创新项目，为创意找到落地的起点。"
+    },
+    starter: {
+      title: "STARTER",
+      description: "启动你的项目，获得社区支持。完成MVP后可发起众筹，让社区参与、支持并见证项目的起飞。"
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-black">
       {/* 导航栏 */}
@@ -64,24 +114,167 @@ export default function Component() {
         <div className="flex items-center space-x-6">
           <div className="text-white text-lg font-bold">706/acc</div>
           <div className="flex space-x-4">
-            <button 
-              className="text-white hover:bg-white/10 px-3 py-1 rounded-sm"
-              onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
-            >
-              Weekly
-            </button>
-            <button 
-            className="text-white hover:bg-white/10 px-3 py-1 rounded-sm"
-            onClick={() => window.open('#', '_blank')}
-            >
-              IDEATION
-            </button>
-            <button 
-            className="text-white hover:bg-white/10 px-3 py-1 rounded-sm"
-            onClick={() => window.open('#', '_blank')}
-            >
-              Starter
-            </button>
+            {/* Weekly按钮 - 添加Tooltip */}
+            <div className="relative">
+              <button 
+                className="text-white hover:bg-white/10 px-3 py-1 rounded-sm transition-all duration-200"
+                onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
+                onMouseEnter={() => setShowTooltip('weekly')}
+                onMouseLeave={() => setShowTooltip('')}
+              >
+                Weekly
+              </button>
+              
+              {/* Weekly Tooltip */}
+              {showTooltip === 'weekly' && (
+                <div className="absolute top-full left-0 mt-2 w-72 bg-black/90 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-4 text-white z-60">
+                  <div className="flex items-center mb-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                    <h4 className="font-semibold text-sm">{moduleDescriptions.weekly.title}</h4>
+                  </div>
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    {moduleDescriptions.weekly.description}
+                  </p>
+                  {/* 小箭头 */}
+                  <div className="absolute -top-1 left-4 w-2 h-2 bg-black/90 border-l border-t border-white/20 transform rotate-45"></div>
+                </div>
+              )}
+            </div>
+            
+            {/* Ideation按钮 - 添加Tooltip */}
+            <div className="relative">
+              <button 
+                className={`text-white hover:bg-white/10 px-3 py-1 rounded-sm transition-all duration-200 ${
+                  showIdeationModal ? 'bg-white/10' : ''
+                }`}
+                onClick={() => setShowIdeationModal(!showIdeationModal)}
+                onMouseEnter={() => setShowTooltip('ideation')}
+                onMouseLeave={() => setShowTooltip('')}
+              >
+                Ideation
+              </button>
+              
+              {/* Ideation Tooltip */}
+              {showTooltip === 'ideation' && !showIdeationModal && (
+                <div className="absolute top-full left-0 mt-2 w-72 bg-black/90 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-4 text-white z-60">
+                  <div className="flex items-center mb-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
+                    <h4 className="font-semibold text-sm">{moduleDescriptions.ideation.title}</h4>
+                  </div>
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    {moduleDescriptions.ideation.description}
+                  </p>
+                  {/* 小箭头 */}
+                  <div className="absolute -top-1 left-4 w-2 h-2 bg-black/90 border-l border-t border-white/20 transform rotate-45"></div>
+                </div>
+              )}
+              
+              {/* Ideation 下拉展开内容 */}
+              <div 
+                className={`absolute top-full left-0 mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top ${
+                  showIdeationModal 
+                    ? 'opacity-100 scale-100 translate-y-0' 
+                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                }`}
+              >
+                <div className="p-6">
+                  {/* 标题区域 */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">最新思考</h3>
+                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                  </div>
+                  
+                  {/* 文章列表 */}
+                  <div className="space-y-3">
+                    {ideationArticles.map((article, index) => (
+                      <div 
+                        key={article.id}
+                        className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
+                        onClick={() => window.open(article.url, '_blank')}
+                      >
+                        <div className="p-4">
+                          {/* 文章标签和日期 */}
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-medium">
+                              {article.tag}
+                            </span>
+                            <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="7" y1="17" x2="17" y2="7"></line>
+                                <polyline points="7 7 17 7 17 17"></polyline>
+                              </svg>
+                            </div>
+                          </div>
+                          
+                          {/* 文章标题 */}
+                          <h4 className="font-medium text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                            {article.title}
+                          </h4>
+                          
+                          {/* 文章摘要 */}
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                            {article.excerpt}
+                          </p>
+                          
+                          {/* 文章元信息 */}
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <span>{article.date}</span>
+                            <span>{article.readTime}</span>
+                          </div>
+                        </div>
+                        
+                        {/* 底部装饰条 */}
+                        <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* 底部链接 */}
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">更多文章</span>
+                      <button 
+                        className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+                        onClick={() => window.open('https://mp.weixin.qq.com/mp/homepage?__biz=MzU3ODYzNjk2MA==', '_blank')}
+                      >
+                        微信公众号
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                          <line x1="7" y1="17" x2="17" y2="7"></line>
+                          <polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Starter按钮 - 添加Tooltip */}
+            <div className="relative">
+              <button 
+                className="text-white hover:bg-white/10 px-3 py-1 rounded-sm transition-all duration-200"
+                onClick={() => setShowStarterModal(true)}
+                onMouseEnter={() => setShowTooltip('starter')}
+                onMouseLeave={() => setShowTooltip('')}
+              >
+                Starter
+              </button>
+              
+              {/* Starter Tooltip */}
+              {showTooltip === 'starter' && (
+                <div className="absolute top-full left-0 mt-2 w-72 bg-black/90 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-4 text-white z-60">
+                  <div className="flex items-center mb-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                    <h4 className="font-semibold text-sm">{moduleDescriptions.starter.title}</h4>
+                  </div>
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    {moduleDescriptions.starter.description}
+                  </p>
+                  {/* 小箭头 */}
+                  <div className="absolute -top-1 left-4 w-2 h-2 bg-black/90 border-l border-t border-white/20 transform rotate-45"></div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
@@ -205,7 +398,7 @@ export default function Component() {
         <div className="flex items-center space-x-6">
           <button 
             className="text-white hover:underline flex items-center"
-            onClick={() => window.open('https://x.com/labs706', '_blank')}
+            onClick={() => window.open('706creators.io', '_blank')}
           >
             <span>Learn More</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
@@ -229,11 +422,30 @@ export default function Component() {
         </div>
       </nav>
 
+      {/* Starter 弹窗 */}
+      {showStarterModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 className="text-lg font-semibold mb-4">Starter Modal</h2>
+            <p className="text-sm text-gray-600">This is a placeholder for the Starter modal content.</p>
+            <button 
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+              onClick={() => setShowStarterModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 点击外部区域关闭下拉菜单 */}
-      {showPressModal && (
+      {(showPressModal || showIdeationModal) && (
         <div 
           className="fixed inset-0 z-40" 
-          onClick={() => setShowPressModal(false)}
+          onClick={() => {
+            setShowPressModal(false);
+            setShowIdeationModal(false);
+          }}
         />
       )}
 
