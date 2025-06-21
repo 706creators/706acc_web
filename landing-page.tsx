@@ -63,30 +63,24 @@ export default function Component() {
   const ideationArticles = [
     {
       id: 1,
-      title: "创新思维的培养与实践",
-      excerpt: "探讨如何在现代社会中培养创新思维，从理论到实践的全面指南...",
-      date: "2024-05-10",
-      readTime: "8 分钟阅读",
+      title: "你为什么留在社区？",
+      excerpt: "我偶尔也会想，为什么我还留在社区？",
       url: "https://mp.weixin.qq.com/s/A2sSkByrrK8JXQ_DTbF6YQ",
-      tag: "思维方法"
+      tag: "706/acc Ideation #1"
     },
     {
       id: 2,
-      title: "设计思维在产品开发中的应用",
-      excerpt: "深入分析设计思维如何改变传统产品开发流程，提升用户体验...",
-      date: "2024-05-03",
-      readTime: "6 分钟阅读",
+      title: "你的电子股东已就位",
+      excerpt: "新老朋友们分享了有意思的项目，收获了一众电子股东，还有的获得了潜在投资意向",
       url: "https://mp.weixin.qq.com/s/JTbVZNd219TrbU_S7nBVhw",
-      tag: "产品设计"
+      tag: "706/acc Ideation #2"
     },
     {
       id: 3,
-      title: "数字化时代的创新策略",
-      excerpt: "解析数字化转型背景下的创新策略制定与执行要点...",
-      date: "2024-04-28",
-      readTime: "10 分钟阅读",
+      title: "面向社区编程",
+      excerpt: "我寻思 🤔，能承载 706 等社区用户最小行为的、最轻量级的产品形态。",
       url: "https://mp.weixin.qq.com/s/oZT9p0H7BAIZNr_e9MiOhg",
-      tag: "数字化"
+      tag: "706/acc Ideation #3"
     }
   ];
 
@@ -180,7 +174,7 @@ export default function Component() {
                 <div className="p-6">
                   {/* 标题区域 */}
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">最新思考</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Ideation每期总结</h3>
                     <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                   </div>
                   
@@ -235,9 +229,9 @@ export default function Component() {
                       <span className="text-gray-500">更多文章</span>
                       <button 
                         className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
-                        onClick={() => window.open('https://mp.weixin.qq.com/mp/homepage?__biz=MzU3ODYzNjk2MA==', '_blank')}
+                        onClick={() => window.open('https://x.com/706labs', '_blank')}
                       >
-                        微信公众号
+                        link to 706/acc
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
                           <line x1="7" y1="17" x2="17" y2="7"></line>
                           <polyline points="7 7 17 7 17 17"></polyline>
