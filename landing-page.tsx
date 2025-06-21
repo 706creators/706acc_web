@@ -229,7 +229,7 @@ export default function Component() {
                       <span className="text-gray-500">更多文章</span>
                       <button 
                         className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
-                        onClick={() => window.open('https://x.com/706labs', '_blank')}
+                        onClick={() => window.open('https://x.com/Labs706', '_blank')}
                       >
                         link to 706/acc
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
