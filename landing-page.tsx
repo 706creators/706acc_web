@@ -553,7 +553,7 @@ export default function Component() {
           <div className="flex items-center space-x-6 relative z-10">
             <button 
               className="text-white hover:underline flex items-center group transition-all duration-300"
-              onClick={() => window.open('706creators.io', '_blank')}
+              onClick={() => window.open('https://706creators.io/182453c9f903811b9093c48773373880', '_blank')}
             >
               <span className="group-hover:scale-105 transition-transform duration-300">Learn More</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300">
@@ -794,7 +794,7 @@ export default function Component() {
               <button 
                 className="w-full text-left text-white p-3 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
                 onClick={() => {
-                  window.open('706creators.io', '_blank');
+                  window.open('https://706creators.io/182453c9f903811b9093c48773373880', '_blank');
                   setShowMobileMenu(false);
                 }}
               >
