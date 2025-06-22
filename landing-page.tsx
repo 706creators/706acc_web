@@ -7,41 +7,50 @@ export default function Component() {
   const [mounted, setMounted] = useState(false);
   const [showPressModal, setShowPressModal] = useState(false);
   const [showIdeationModal, setShowIdeationModal] = useState(false);
+  const [showWeeklyModal, setShowWeeklyModal] = useState(false);
   const [showStarterModal, setShowStarterModal] = useState(false);
   const [showTooltip, setShowTooltip] = useState('');
   const { theme, setTheme } = useTheme();
+
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   // 背景图像数组按行组织
   const backgroundImageRows = [
-    // 第一行：1-6
     Array.from({ length: 6 }, (_, i) => ({
       id: i + 1,
       src: `/${i + 1}.jpg`,
       alt: `Project ${i + 1}`,
     })),
-    // 第二行：7-12
     Array.from({ length: 6 }, (_, i) => ({
       id: i + 7,
       src: `/${i + 7}.jpg`,
       alt: `Project ${i + 7}`,
     })),
-    // 第三行：13-18
     Array.from({ length: 6 }, (_, i) => ({
       id: i + 13,
       src: `/${i + 13}.jpg`,
       alt: `Project ${i + 13}`,
     })),
-    // 第四行：19-24
     Array.from({ length: 6 }, (_, i) => ({
       id: i + 19,
       src: `/${i + 19}.jpg`,
       alt: `Project ${i + 19}`,
     })),
-    // 第五行：25-31
     Array.from({ length: 7 }, (_, i) => ({
       id: i + 25,
       src: `/${i + 25}.jpg`,
@@ -53,7 +62,7 @@ export default function Component() {
   const tweetInfo = {
     id: "1922238801264706002",
     user: "Labs706",
-    userImage: "/706acc.svg", // 用您的 logo 或默认图像
+    userImage: "/706acc.svg",
     text: "706ACC创新工作室最新动态，点击查看完整推文",
     date: "2024-05-07",
     url: "https://x.com/Labs706/status/1922238801264706002"
@@ -84,6 +93,34 @@ export default function Component() {
     }
   ];
 
+  // Weekly视频信息
+  const weeklyVideos = [
+    {
+      id: 1,
+      title: "使用 v0，快速构建一个产品原型",
+      description: "邀请了 706 的老朋友 & 合约工程师 Yan 来给我们分享 v0 的实践 ",
+      url: "https://www.bilibili.com/video/BV1nQMHziETt/?share_source=copy_web",
+      thumbnail: "/weekly-thumbnail-1.jpg",
+      tag: "706/acc Weekly #24"
+    },
+    {
+      id: 2,
+      title: "Pendle 创新型 AMM 协议的设计范式",
+      description: "邀请了 Buzzing Club Co-Founder & Defi 资深研究者 Luke 🧑🏻‍🎤，跟大家深入聊聊备受关注的 Pendle 协议",
+      url: "https://www.bilibili.com/video/BV1sRTHz6EQC/?share_source=copy_web&vd_source=1b0d687b21b6f10f4eec82b7eb751c27",
+      thumbnail: "/weekly-thumbnail-2.jpg",
+      tag: "706/acc Weekly #23"
+    },
+    {
+      id: 3,
+      title: "CopilotKit 探索 Agent 交互的新方式",
+      description: "社区技术发电机 & 纯爱永动机星 sir一起聊聊 CopilotKit",
+      url: "https://www.bilibili.com/video/BV191EXzTEVv/?share_source=copy_web&vd_source=1b0d687b21b6f10f4eec82b7eb751c27",
+      thumbnail: "/weekly-thumbnail-3.jpg",
+      tag: "706/acc Weekly #22"
+    }
+  ];
+
   // 模块介绍信息
   const moduleDescriptions = {
     weekly: {
@@ -103,82 +140,201 @@ export default function Component() {
   return (
     <div className="relative min-h-screen bg-black">
       {/* 导航栏 */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-md">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4">
+        {/* 添加动态背景 */}
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-xl border-b border-white/10" />
+        <div 
+          className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700"
+          style={{
+            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.08), transparent 40%)`
+          }}
+        />
+        
         {/* 左侧 Logo和导航 */}
-        <div className="flex items-center space-x-6">
-          <div className="text-white text-lg font-bold">706/acc</div>
+        <div className="flex items-center space-x-6 relative z-10">
+          <div className="text-white text-lg font-bold hover:scale-110 transition-transform duration-300 cursor-pointer">
+            706/acc
+          </div>
           <div className="flex space-x-4">
-            {/* Weekly按钮 - 添加Tooltip */}
+            {/* 增强Weekly按钮 */}
             <div className="relative">
               <button 
-                className="text-white hover:bg-white/10 px-3 py-1 rounded-sm transition-all duration-200"
-                onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
+                className={`relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group ${
+                  showWeeklyModal ? 'bg-white/20 shadow-lg' : 'hover:bg-white/10'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowWeeklyModal(!showWeeklyModal);
+                  // 关闭其他下拉菜单
+                  setShowIdeationModal(false);
+                  setShowPressModal(false);
+                }}
                 onMouseEnter={() => setShowTooltip('weekly')}
                 onMouseLeave={() => setShowTooltip('')}
               >
-                Weekly
+                {/* 添加动态背景光效 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/15 to-purple-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative z-10 font-medium">Weekly</span>
               </button>
               
-              {/* Weekly Tooltip */}
-              {showTooltip === 'weekly' && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-black/90 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-4 text-white z-60">
-                  <div className="flex items-center mb-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                    <h4 className="font-semibold text-sm">{moduleDescriptions.weekly.title}</h4>
+              {/* 增强Tooltip样式 */}
+              {showTooltip === 'weekly' && !showWeeklyModal && (
+                <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
+                  <div className="flex items-center mb-3">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-3 shadow-lg shadow-blue-500/50"></div>
+                    <h4 className="font-bold text-lg bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                      {moduleDescriptions.weekly.title}
+                    </h4>
                   </div>
-                  <p className="text-xs text-white/80 leading-relaxed">
+                  <p className="text-sm text-white/90 leading-relaxed font-medium">
                     {moduleDescriptions.weekly.description}
                   </p>
-                  {/* 小箭头 */}
-                  <div className="absolute -top-1 left-4 w-2 h-2 bg-black/90 border-l border-t border-white/20 transform rotate-45"></div>
+                  <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
+                  
+                  {/* 添加装饰性元素 */}
+                  <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full animate-spin-slow"></div>
                 </div>
               )}
+
+              {/* Weekly 下拉展开内容 */}
+              <div 
+                className={`absolute top-full left-0 mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
+                  showWeeklyModal 
+                    ? 'opacity-100 scale-100 translate-y-0' 
+                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                }`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Weekly 最新视频</h3>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {weeklyVideos.map((video, index) => (
+                      <div 
+                        key={video.id}
+                        className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
+                        onClick={() => window.open(video.url, '_blank')}
+                      >
+                        <div className="flex gap-3 p-3">
+                          <div className="flex-shrink-0 w-20 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md flex items-center justify-center relative overflow-hidden">
+                            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            </div>
+                            <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
+                              {video.duration}
+                            </div>
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-1">
+                              <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-medium">
+                                {video.tag}
+                              </span>
+                              <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                                  <polyline points="7 7 17 7 17 17"></polyline>
+                                </svg>
+                              </div>
+                            </div>
+                            
+                            <h4 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                              {video.title}
+                            </h4>
+                            
+                            <p className="text-xs text-gray-600 line-clamp-1 mb-2">
+                              {video.description}
+                            </p>
+                            
+                            <div className="flex items-center justify-between text-xs text-gray-500">
+                              <span>{video.date}</span>
+                              <span>B站视频</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">查看全部视频</span>
+                      <button 
+                        className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+                        onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
+                      >
+                        B站主页
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                          <line x1="7" y1="17" x2="17" y2="7"></line>
+                          <polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            {/* Ideation按钮 - 添加Tooltip */}
+            {/* 增强Ideation按钮 */}
             <div className="relative">
               <button 
-                className={`text-white hover:bg-white/10 px-3 py-1 rounded-sm transition-all duration-200 ${
-                  showIdeationModal ? 'bg-white/10' : ''
+                className={`relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group ${
+                  showIdeationModal ? 'bg-white/20 shadow-lg' : 'hover:bg-white/10'
                 }`}
-                onClick={() => setShowIdeationModal(!showIdeationModal)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowIdeationModal(!showIdeationModal);
+                  // 关闭其他下拉菜单
+                  setShowWeeklyModal(false);
+                  setShowPressModal(false);
+                }}
                 onMouseEnter={() => setShowTooltip('ideation')}
                 onMouseLeave={() => setShowTooltip('')}
               >
-                Ideation
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-400/15 to-red-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative z-10 font-medium">Ideation</span>
               </button>
               
-              {/* Ideation Tooltip */}
+              {/* 增强Ideation Tooltip */}
               {showTooltip === 'ideation' && !showIdeationModal && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-black/90 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-4 text-white z-60">
-                  <div className="flex items-center mb-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
-                    <h4 className="font-semibold text-sm">{moduleDescriptions.ideation.title}</h4>
+                <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
+                  <div className="flex items-center mb-3">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full mr-3 shadow-lg shadow-orange-500/50"></div>
+                    <h4 className="font-bold text-lg bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                      {moduleDescriptions.ideation.title}
+                    </h4>
                   </div>
-                  <p className="text-xs text-white/80 leading-relaxed">
+                  <p className="text-sm text-white/90 leading-relaxed font-medium">
                     {moduleDescriptions.ideation.description}
                   </p>
-                  {/* 小箭头 */}
-                  <div className="absolute -top-1 left-4 w-2 h-2 bg-black/90 border-l border-t border-white/20 transform rotate-45"></div>
+                  <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
+                  
+                  <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-full animate-spin-slow"></div>
                 </div>
               )}
               
-              {/* Ideation 下拉展开内容 */}
+              {/* Ideation下拉内容 - 调整位置避免重叠 */}
               <div 
-                className={`absolute top-full left-0 mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top ${
+                className={`absolute top-full left-[-150px] mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
                   showIdeationModal 
                     ? 'opacity-100 scale-100 translate-y-0' 
                     : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
                 }`}
+                onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-6">
-                  {/* 标题区域 */}
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">Ideation每期总结</h3>
                     <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                   </div>
                   
-                  {/* 文章列表 */}
                   <div className="space-y-3">
                     {ideationArticles.map((article, index) => (
                       <div 
@@ -187,7 +343,6 @@ export default function Component() {
                         onClick={() => window.open(article.url, '_blank')}
                       >
                         <div className="p-4">
-                          {/* 文章标签和日期 */}
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-medium">
                               {article.tag}
@@ -200,30 +355,25 @@ export default function Component() {
                             </div>
                           </div>
                           
-                          {/* 文章标题 */}
                           <h4 className="font-medium text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                             {article.title}
                           </h4>
                           
-                          {/* 文章摘要 */}
                           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                             {article.excerpt}
                           </p>
                           
-                          {/* 文章元信息 */}
                           <div className="flex items-center justify-between text-xs text-gray-500">
                             <span>{article.date}</span>
                             <span>{article.readTime}</span>
                           </div>
                         </div>
                         
-                        {/* 底部装饰条 */}
                         <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                       </div>
                     ))}
                   </div>
                   
-                  {/* 底部链接 */}
                   <div className="mt-4 pt-4 border-t border-gray-100">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-500">更多文章</span>
@@ -243,29 +393,36 @@ export default function Component() {
               </div>
             </div>
             
-            {/* Starter按钮 - 添加Tooltip */}
+            {/* 增强Starter按钮 */}
             <div className="relative">
               <button 
-                className="text-white hover:bg-white/10 px-3 py-1 rounded-sm transition-all duration-200"
-                onClick={() => setShowStarterModal(true)}
+                className="relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowStarterModal(true);
+                }}
                 onMouseEnter={() => setShowTooltip('starter')}
                 onMouseLeave={() => setShowTooltip('')}
               >
-                Starter
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/15 to-pink-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative z-10 font-medium">Starter</span>
               </button>
               
-              {/* Starter Tooltip */}
+              {/* 增强Starter Tooltip */}
               {showTooltip === 'starter' && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-black/90 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-4 text-white z-60">
-                  <div className="flex items-center mb-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                    <h4 className="font-semibold text-sm">{moduleDescriptions.starter.title}</h4>
+                <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
+                  <div className="flex items-center mb-3">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-3 shadow-lg shadow-purple-500/50"></div>
+                    <h4 className="font-bold text-lg bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      {moduleDescriptions.starter.title}
+                    </h4>
                   </div>
-                  <p className="text-xs text-white/80 leading-relaxed">
+                  <p className="text-sm text-white/90 leading-relaxed font-medium">
                     {moduleDescriptions.starter.description}
                   </p>
-                  {/* 小箭头 */}
-                  <div className="absolute -top-1 left-4 w-2 h-2 bg-black/90 border-l border-t border-white/20 transform rotate-45"></div>
+                  <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
+                  
+                  <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full animate-spin-slow"></div>
                 </div>
               )}
             </div>
@@ -275,14 +432,21 @@ export default function Component() {
         {/* 中间搜索框 */}
         <div className="flex-1 max-w-md mx-4 relative">
           <button 
-            className={`flex items-center justify-between w-full rounded-md px-4 py-2 transition-all duration-200 ${
+            className={`flex items-center justify-between w-full rounded-xl px-4 py-2 transition-all duration-300 group ${
               showPressModal 
-                ? 'bg-white/20 border-white/30 border' 
+                ? 'bg-white/20 border-white/30 border shadow-lg' 
                 : 'bg-white/10 hover:bg-white/15'
             }`}
-            onClick={() => setShowPressModal(!showPressModal)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowPressModal(!showPressModal);
+              // 关闭其他下拉菜单
+              setShowWeeklyModal(false);
+              setShowIdeationModal(false);
+            }}
           >
-            <span className="text-white/70">Press</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-blue-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
+            <span className="text-white/70 relative z-10">Press</span>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               width="16" 
@@ -293,34 +457,33 @@ export default function Component() {
               strokeWidth="2" 
               strokeLinecap="round" 
               strokeLinejoin="round"
-              className={`transition-transform duration-200 ${showPressModal ? 'rotate-45' : ''}`}
+              className={`transition-transform duration-200 relative z-10 ${showPressModal ? 'rotate-45' : ''}`}
             >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </button>
           
-          {/* Press 下拉展开内容 */}
+          {/* Press下拉内容 */}
           <div 
-            className={`absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top ${
+            className={`absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
               showPressModal 
                 ? 'opacity-100 scale-100 translate-y-0' 
                 : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
             }`}
+            onClick={(e) => e.stopPropagation()}
           >
+            {/* 保持原有的Press内容 */}
             <div className="p-6">
-              {/* 标题区域 */}
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Latest from 706ACC</h3>
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               </div>
               
-              {/* Twitter推文卡片 */}
               <div 
                 className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
                 onClick={() => window.open(tweetInfo.url, '_blank')}
               >
-                {/* 推文头部 */}
                 <div className="flex items-center p-4 border-b border-gray-50">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 mr-3 flex items-center justify-center">
                     <img 
@@ -350,12 +513,10 @@ export default function Component() {
                   </div>
                 </div>
                 
-                {/* 推文内容 */}
                 <div className="p-4">
                   <p className="text-gray-800 text-sm leading-relaxed">{tweetInfo.text}</p>
                 </div>
                 
-                {/* 推文预览图 - 简化版 */}
                 <div className="h-32 bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center border-t border-gray-50">
                   <div className="text-center">
                     <div className="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2">
@@ -368,7 +529,6 @@ export default function Component() {
                 </div>
               </div>
               
-              {/* 底部链接 */}
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">More updates on</span>
@@ -389,23 +549,22 @@ export default function Component() {
         </div>
         
         {/* 右侧链接和信息 */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-6 relative z-10">
           <button 
-            className="text-white hover:underline flex items-center"
+            className="text-white hover:underline flex items-center group transition-all duration-300"
             onClick={() => window.open('706creators.io', '_blank')}
           >
-            <span>Learn More</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+            <span className="group-hover:scale-105 transition-transform duration-300">Learn More</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300">
               <line x1="7" y1="17" x2="17" y2="7"></line>
               <polyline points="7 7 17 7 17 17"></polyline>
             </svg>
           </button>
           
-          <div className="text-white/70 text-sm hidden md:block">COME HERE AND FIND YOURSELF</div>
+          <div className="text-white/70 text-sm hidden md:block hover:text-white transition-colors duration-300">COME HERE AND FIND YOURSELF</div>
           
-          {/* 主题切换按钮 */}
           <button 
-            className="p-2 text-white hover:bg-white/10 rounded-full"
+            className="p-2 text-white hover:bg-white/10 rounded-full transition-all duration-300 hover:scale-110"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -416,54 +575,82 @@ export default function Component() {
         </div>
       </nav>
 
-      {/* Starter 弹窗 */}
+      {/* Starter 弹窗 - 提升z-index */}
       {showStarterModal && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-            <h2 className="text-lg font-semibold mb-4">Starter Modal</h2>
-            <p className="text-sm text-gray-600">This is a placeholder for the Starter modal content.</p>
-            <button 
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-              onClick={() => setShowStarterModal(false)}
+        <>
+          {/* 弹窗背景遮罩 */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[80]"
+            onClick={() => setShowStarterModal(false)}
+          />
+          {/* 弹窗内容 */}
+          <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+            <div 
+              className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all duration-300 scale-100"
+              onClick={(e) => e.stopPropagation()}
             >
-              Close
-            </button>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6M12 17v6M5.64 5.64l4.24 4.24M14.12 14.12l4.24 4.24M1 12h6M17 12h6M5.64 18.36l4.24-4.24M14.12 9.88l4.24-4.24"></path>
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">Starter Modal</h2>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  This is a beautifully designed placeholder for the Starter modal content. Here you can add project startup information, application forms, or other relevant content.
+                </p>
+                <div className="flex gap-3">
+                  <button 
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                    onClick={() => setShowStarterModal(false)}
+                  >
+                    Get Started
+                  </button>
+                  <button 
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 hover:scale-105 transition-all duration-300"
+                    onClick={() => setShowStarterModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
-      {/* 点击外部区域关闭下拉菜单 */}
-      {(showPressModal || showIdeationModal) && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => {
-            setShowPressModal(false);
-            setShowIdeationModal(false);
-          }}
-        />
-      )}
+      {/* 添加全局点击事件监听器，点击其他地方关闭下拉菜单 */}
+      <div 
+        className="fixed inset-0 z-[30]"
+        style={{ 
+          pointerEvents: (showPressModal || showIdeationModal || showWeeklyModal) ? 'auto' : 'none' 
+        }}
+        onClick={() => {
+          setShowPressModal(false);
+          setShowIdeationModal(false);
+          setShowWeeklyModal(false);
+        }}
+      />
 
-      {/* 半透明遮罩层 - 调低透明度 */}
+      {/* 半透明遮罩层 */}
       <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-black/30' : 'bg-gray-500/20'}`} />
 
-      {/* 背景图像渲染部分 - 简洁优雅版本 */}
+      {/* 背景图像渲染部分 */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* 主背景网格 - 使用更规整的布局 */}
         <div className="absolute inset-0 opacity-25">
           <div className="grid grid-cols-8 gap-3 p-6 h-full">
             {backgroundImageRows.flat().slice(0, 24).map((image, index) => {
-              // 定义3种不同的卡片尺寸，创造节奏感
               const sizeVariants = [
-                'col-span-2 row-span-2', // 大卡片
-                'col-span-1 row-span-2', // 竖直卡片
-                'col-span-2 row-span-1', // 横向卡片
+                'col-span-2 row-span-2',
+                'col-span-1 row-span-2',
+                'col-span-2 row-span-1',
               ];
               
-              // 根据位置分配不同尺寸，创造有序的视觉层次
               const getSizeClass = (idx) => {
-                if (idx % 8 === 0 || idx % 8 === 3) return sizeVariants[0]; // 大卡片
-                if (idx % 8 === 1 || idx % 8 === 6) return sizeVariants[1]; // 竖直卡片
-                return sizeVariants[2]; // 横向卡片
+                if (idx % 8 === 0 || idx % 8 === 3) return sizeVariants[0];
+                if (idx % 8 === 1 || idx % 8 === 6) return sizeVariants[1];
+                return sizeVariants[2];
               };
               
               return (
@@ -474,13 +661,8 @@ export default function Component() {
                     animation: `fadeInUp 0.8s ease-out ${index * 0.1}s both`
                   }}
                 >
-                  {/* 卡片背景和边框 */}
                   <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg" />
-                  
-                  {/* 悬浮时的渐变覆盖 */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* 图片 */}
                   <img
                     src={image.src}
                     alt={image.alt}
@@ -492,8 +674,6 @@ export default function Component() {
                       }
                     }}
                   />
-                  
-                  {/* 悬浮时的光晕边框 */}
                   <div className="absolute inset-0 ring-1 ring-white/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               );
@@ -501,9 +681,7 @@ export default function Component() {
           </div>
         </div>
 
-        {/* 背景装饰元素 - 更少更精致 */}
         <div className="absolute inset-0 opacity-15">
-          {/* 大型浮动卡片作为背景层 */}
           {[2, 8, 15, 22].map((imageIndex, i) => (
             <div
               key={`bg-card-${imageIndex}`}
@@ -533,13 +711,10 @@ export default function Component() {
           ))}
         </div>
 
-        {/* 几何装饰元素 */}
         <div className="absolute inset-0 opacity-10">
-          {/* 简洁的几何线条 */}
           <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           <div className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           
-          {/* 角落的装饰圆点 */}
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={`dot-${i}`}
@@ -555,41 +730,57 @@ export default function Component() {
         </div>
       </div>
 
-      {/* 自定义CSS动画 */}
       <style jsx>{`
         @keyframes fadeInUp {
           0% {
             opacity: 0;
-            transform: translateY(30px) scale(0.95);
+            transform: translateY(40px) scale(0.9) rotateX(10deg);
           }
           100% {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0) scale(1) rotateX(0deg);
           }
         }
 
         @keyframes gentleFloat {
           0%, 100% {
-            transform: translateY(0px) rotate(-5deg);
+            transform: translateY(0px) rotate(-5deg) scale(1);
           }
-          50% {
-            transform: translateY(-15px) rotate(-3deg);
+          33% {
+            transform: translateY(-8px) rotate(-3deg) scale(1.02);
+          }
+          66% {
+            transform: translateY(-12px) rotate(-7deg) scale(0.98);
           }
         }
 
         @keyframes pulse {
           0%, 100% {
-            opacity: 0.3;
-            transform: scale(1);
+            opacity: 0.4;
+            transform: scale(1) rotate(0deg);
           }
           50% {
-            opacity: 0.8;
-            transform: scale(1.2);
+            opacity: 1;
+            transform: scale(1.3) rotate(180deg);
+          }
+        }
+
+        .animate-spin-slow {
+          animation: spin 3s linear infinite;
+        }
+
+        @keyframes sparkle {
+          0%, 100% {
+            opacity: 0;
+            transform: scale(0) rotate(0deg);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1) rotate(180deg);
           }
         }
       `}</style>
 
-      {/* 中央内容 */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-white">
         <div className="mb-8">
           <img
@@ -609,7 +800,6 @@ export default function Component() {
         </h1>
       </div>
 
-      {/* 装饰性光球效果 */}
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl" />
       <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl" />
