@@ -83,12 +83,13 @@ export default function Component() {
   // Ideation文章信息
   const ideationArticles = [
     {
-      id: 1,
-      title: "你为什么留在社区？",
-      excerpt: "我偶尔也会想，为什么我还留在社区？",
-      url: "https://mp.weixin.qq.com/s/A2sSkByrrK8JXQ_DTbF6YQ",
-      tag: "706/acc Ideation #1"
+      id: 3,
+      title: "面向社区编程",
+      excerpt: "我寻思 🤔，能承载 706 等社区用户最小行为的、最轻量级的产品形态。",
+      url: "https://mp.weixin.qq.com/s/oZT9p0H7BAIZNr_e9MiOhg",
+      tag: "706/acc Ideation #3"
     },
+
     {
       id: 2,
       title: "你的电子股东已就位",
@@ -96,12 +97,13 @@ export default function Component() {
       url: "https://mp.weixin.qq.com/s/JTbVZNd219TrbU_S7nBVhw",
       tag: "706/acc Ideation #2"
     },
+    
     {
-      id: 3,
-      title: "面向社区编程",
-      excerpt: "我寻思 🤔，能承载 706 等社区用户最小行为的、最轻量级的产品形态。",
-      url: "https://mp.weixin.qq.com/s/oZT9p0H7BAIZNr_e9MiOhg",
-      tag: "706/acc Ideation #3"
+      id: 1,
+      title: "你为什么留在社区？",
+      excerpt: "我偶尔也会想，为什么我还留在社区？",
+      url: "https://mp.weixin.qq.com/s/A2sSkByrrK8JXQ_DTbF6YQ",
+      tag: "706/acc Ideation #1"
     }
   ];
 
