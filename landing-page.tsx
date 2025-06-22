@@ -10,6 +10,7 @@ export default function Component() {
   const [showWeeklyModal, setShowWeeklyModal] = useState(false);
   const [showStarterModal, setShowStarterModal] = useState(false);
   const [showTooltip, setShowTooltip] = useState('');
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const { theme, setTheme } = useTheme();
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -27,6 +28,17 @@ export default function Component() {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setShowMobileMenu(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // 背景图像数组按行组织
@@ -139,101 +151,206 @@ export default function Component() {
 
   return (
     <div className="relative min-h-screen bg-black">
-      {/* 导航栏 */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4">
-        {/* 添加动态背景 */}
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-xl border-b border-white/10" />
-        <div 
-          className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700"
-          style={{
-            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.08), transparent 40%)`
-          }}
-        />
-        
-        {/* 左侧 Logo和导航 */}
-        <div className="flex items-center space-x-6 relative z-10">
-          <div className="text-white text-lg font-bold hover:scale-110 transition-transform duration-300 cursor-pointer">
-            706/acc
-          </div>
-          <div className="flex space-x-4">
-            {/* 增强Weekly按钮 */}
-            <div className="relative">
-              <button 
-                className={`relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group ${
-                  showWeeklyModal ? 'bg-white/20 shadow-lg' : 'hover:bg-white/10'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowWeeklyModal(!showWeeklyModal);
-                  // 关闭其他下拉菜单
-                  setShowIdeationModal(false);
-                  setShowPressModal(false);
-                }}
-                onMouseEnter={() => setShowTooltip('weekly')}
-                onMouseLeave={() => setShowTooltip('')}
-              >
-                {/* 添加动态背景光效 */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/15 to-purple-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="relative z-10 font-medium">Weekly</span>
-              </button>
-              
-              {/* 增强Tooltip样式 */}
-              {showTooltip === 'weekly' && !showWeeklyModal && (
-                <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
-                  <div className="flex items-center mb-3">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-3 shadow-lg shadow-blue-500/50"></div>
-                    <h4 className="font-bold text-lg bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                      {moduleDescriptions.weekly.title}
-                    </h4>
+      {/* 导航栏 - 移动端适配 */}
+      <nav className="fixed top-0 left-0 right-0 z-50">
+        {/* 桌面端导航栏 */}
+        <div className="hidden md:flex items-center justify-between px-6 py-4">
+          {/* 添加动态背景 */}
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-xl border-b border-white/10" />
+          <div 
+            className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700"
+            style={{
+              background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.08), transparent 40%)`
+            }}
+          />
+          
+          {/* 左侧 Logo和导航 */}
+          <div className="flex items-center space-x-6 relative z-10">
+            <div className="text-white text-lg font-bold hover:scale-110 transition-transform duration-300 cursor-pointer">
+              706/acc
+            </div>
+            <div className="flex space-x-4">
+              {/* 保持原有的Weekly、Ideation、Starter按钮 */}
+              <div className="relative">
+                <button 
+                  className={`relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group ${
+                    showWeeklyModal ? 'bg-white/20 shadow-lg' : 'hover:bg-white/10'
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowWeeklyModal(!showWeeklyModal);
+                    setShowIdeationModal(false);
+                    setShowPressModal(false);
+                  }}
+                  onMouseEnter={() => setShowTooltip('weekly')}
+                  onMouseLeave={() => setShowTooltip('')}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400/15 to-purple-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <span className="relative z-10 font-medium">Weekly</span>
+                </button>
+                
+                {/* 保持原有的Weekly tooltip和下拉内容 */}
+                {showTooltip === 'weekly' && !showWeeklyModal && (
+                  <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center mb-3">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full mr-3 shadow-lg shadow-blue-500/50"></div>
+                      <h4 className="font-bold text-lg bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        {moduleDescriptions.weekly.title}
+                      </h4>
+                    </div>
+                    <p className="text-sm text-white/90 leading-relaxed font-medium">
+                      {moduleDescriptions.weekly.description}
+                    </p>
+                    <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
+                    <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full animate-spin-slow"></div>
                   </div>
-                  <p className="text-sm text-white/90 leading-relaxed font-medium">
-                    {moduleDescriptions.weekly.description}
-                  </p>
-                  <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
-                  
-                  {/* 添加装饰性元素 */}
-                  <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full animate-spin-slow"></div>
-                </div>
-              )}
+                )}
 
-              {/* Weekly 下拉展开内容 */}
-              <div 
-                className={`absolute top-full left-0 mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
-                  showWeeklyModal 
-                    ? 'opacity-100 scale-100 translate-y-0' 
-                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                }`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Weekly 最新视频</h3>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {weeklyVideos.map((video, index) => (
-                      <div 
-                        key={video.id}
-                        className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
-                        onClick={() => window.open(video.url, '_blank')}
-                      >
-                        <div className="flex gap-3 p-3">
-                          <div className="flex-shrink-0 w-20 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md flex items-center justify-center relative overflow-hidden">
-                            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z"/>
-                              </svg>
+                <div 
+                  className={`absolute top-full left-0 mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
+                    showWeeklyModal 
+                      ? 'opacity-100 scale-100 translate-y-0' 
+                      : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* 保持原有的Weekly下拉内容 */}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Weekly 最新视频</h3>
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {weeklyVideos.map((video, index) => (
+                        <div 
+                          key={video.id}
+                          className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
+                          onClick={() => window.open(video.url, '_blank')}
+                        >
+                          <div className="flex gap-3 p-3">
+                            <div className="flex-shrink-0 w-20 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md flex items-center justify-center relative overflow-hidden">
+                              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                              </div>
                             </div>
-                            <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
-                              {video.duration}
+                            
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between mb-1">
+                                <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-medium">
+                                  {video.tag}
+                                </span>
+                                <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                                    <polyline points="7 7 17 7 17 17"></polyline>
+                                  </svg>
+                                </div>
+                              </div>
+                              
+                              <h4 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                {video.title}
+                              </h4>
+                              
+                              <p className="text-xs text-gray-600 line-clamp-1 mb-2">
+                                {video.description}
+                              </p>
+                              
+                              <div className="flex items-center justify-between text-xs text-gray-500">
+                                <span>{video.date}</span>
+                                <span>B站视频</span>
+                              </div>
                             </div>
                           </div>
                           
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-1">
-                              <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-medium">
-                                {video.tag}
+                          <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">查看全部视频</span>
+                        <button 
+                          className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+                          onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
+                        >
+                          B站主页
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                            <line x1="7" y1="17" x2="17" y2="7"></line>
+                            <polyline points="7 7 17 7 17 17"></polyline>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* 类似地保持其他按钮的完整代码... */}
+              <div className="relative">
+                <button 
+                  className={`relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group ${
+                    showIdeationModal ? 'bg-white/20 shadow-lg' : 'hover:bg-white/10'
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowIdeationModal(!showIdeationModal);
+                    setShowWeeklyModal(false);
+                    setShowPressModal(false);
+                  }}
+                  onMouseEnter={() => setShowTooltip('ideation')}
+                  onMouseLeave={() => setShowTooltip('')}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400/15 to-red-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <span className="relative z-10 font-medium">Ideation</span>
+                </button>
+                
+                {/* 保持原有的Ideation内容... */}
+                {showTooltip === 'ideation' && !showIdeationModal && (
+                  <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center mb-3">
+                      <div className="w-3 h-3 bg-orange-500 rounded-full mr-3 shadow-lg shadow-orange-500/50"></div>
+                      <h4 className="font-bold text-lg bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                        {moduleDescriptions.ideation.title}
+                      </h4>
+                    </div>
+                    <p className="text-sm text-white/90 leading-relaxed font-medium">
+                      {moduleDescriptions.ideation.description}
+                    </p>
+                    <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
+                    <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-full animate-spin-slow"></div>
+                  </div>
+                )}
+
+                <div 
+                  className={`absolute top-full left-[-150px] mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
+                    showIdeationModal 
+                      ? 'opacity-100 scale-100 translate-y-0' 
+                      : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* 保持原有的Ideation下拉内容 */}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Ideation每期总结</h3>
+                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {ideationArticles.map((article, index) => (
+                        <div 
+                          key={article.id}
+                          className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
+                          onClick={() => window.open(article.url, '_blank')}
+                        >
+                          <div className="p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-medium">
+                                {article.tag}
                               </span>
                               <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -243,335 +360,455 @@ export default function Component() {
                               </div>
                             </div>
                             
-                            <h4 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                              {video.title}
+                            <h4 className="font-medium text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                              {article.title}
                             </h4>
                             
-                            <p className="text-xs text-gray-600 line-clamp-1 mb-2">
-                              {video.description}
+                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                              {article.excerpt}
                             </p>
                             
                             <div className="flex items-center justify-between text-xs text-gray-500">
-                              <span>{video.date}</span>
-                              <span>B站视频</span>
+                              <span>{article.date}</span>
+                              <span>{article.readTime}</span>
                             </div>
                           </div>
+                          
+                          <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                         </div>
-                        
-                        <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">更多文章</span>
+                        <button 
+                          className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+                          onClick={() => window.open('https://x.com/Labs706', '_blank')}
+                        >
+                          link to 706/acc
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                            <line x1="7" y1="17" x2="17" y2="7"></line>
+                            <polyline points="7 7 17 7 17 17"></polyline>
+                          </svg>
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">查看全部视频</span>
-                      <button 
-                        className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
-                        onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
-                      >
-                        B站主页
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
-                          <line x1="7" y1="17" x2="17" y2="7"></line>
-                          <polyline points="7 7 17 7 17 17"></polyline>
-                        </svg>
-                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            {/* 增强Ideation按钮 */}
-            <div className="relative">
-              <button 
-                className={`relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group ${
-                  showIdeationModal ? 'bg-white/20 shadow-lg' : 'hover:bg-white/10'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowIdeationModal(!showIdeationModal);
-                  // 关闭其他下拉菜单
-                  setShowWeeklyModal(false);
-                  setShowPressModal(false);
-                }}
-                onMouseEnter={() => setShowTooltip('ideation')}
-                onMouseLeave={() => setShowTooltip('')}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-400/15 to-red-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="relative z-10 font-medium">Ideation</span>
-              </button>
               
-              {/* 增强Ideation Tooltip */}
-              {showTooltip === 'ideation' && !showIdeationModal && (
-                <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
-                  <div className="flex items-center mb-3">
-                    <div className="w-3 h-3 bg-orange-500 rounded-full mr-3 shadow-lg shadow-orange-500/50"></div>
-                    <h4 className="font-bold text-lg bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-                      {moduleDescriptions.ideation.title}
-                    </h4>
-                  </div>
-                  <p className="text-sm text-white/90 leading-relaxed font-medium">
-                    {moduleDescriptions.ideation.description}
-                  </p>
-                  <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
-                  
-                  <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-full animate-spin-slow"></div>
-                </div>
-              )}
-              
-              {/* Ideation下拉内容 - 调整位置避免重叠 */}
-              <div 
-                className={`absolute top-full left-[-150px] mt-2 w-96 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
-                  showIdeationModal 
-                    ? 'opacity-100 scale-100 translate-y-0' 
-                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                }`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Ideation每期总结</h3>
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {ideationArticles.map((article, index) => (
-                      <div 
-                        key={article.id}
-                        className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
-                        onClick={() => window.open(article.url, '_blank')}
-                      >
-                        <div className="p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-medium">
-                              {article.tag}
-                            </span>
-                            <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="7" y1="17" x2="17" y2="7"></line>
-                                <polyline points="7 7 17 7 17 17"></polyline>
-                              </svg>
-                            </div>
-                          </div>
-                          
-                          <h4 className="font-medium text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                            {article.title}
-                          </h4>
-                          
-                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                            {article.excerpt}
-                          </p>
-                          
-                          <div className="flex items-center justify-between text-xs text-gray-500">
-                            <span>{article.date}</span>
-                            <span>{article.readTime}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">更多文章</span>
-                      <button 
-                        className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
-                        onClick={() => window.open('https://x.com/Labs706', '_blank')}
-                      >
-                        link to 706/acc
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
-                          <line x1="7" y1="17" x2="17" y2="7"></line>
-                          <polyline points="7 7 17 7 17 17"></polyline>
-                        </svg>
-                      </button>
+              <div className="relative">
+                <button 
+                  className="relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group hover:bg-white/10"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowStarterModal(true);
+                  }}
+                  onMouseEnter={() => setShowTooltip('starter')}
+                  onMouseLeave={() => setShowTooltip('')}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400/15 to-pink-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <span className="relative z-10 font-medium">Starter</span>
+                </button>
+                
+                {/* 保持原有的Starter tooltip */}
+                {showTooltip === 'starter' && (
+                  <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center mb-3">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full mr-3 shadow-lg shadow-purple-500/50"></div>
+                      <h4 className="font-bold text-lg bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        {moduleDescriptions.starter.title}
+                      </h4>
                     </div>
+                    <p className="text-sm text-white/90 leading-relaxed font-medium">
+                      {moduleDescriptions.starter.description}
+                    </p>
+                    <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
+                    <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full animate-spin-slow"></div>
                   </div>
-                </div>
+                )}
               </div>
-            </div>
-            
-            {/* 增强Starter按钮 */}
-            <div className="relative">
-              <button 
-                className="relative overflow-hidden text-white px-4 py-2 rounded-xl transition-all duration-300 group hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowStarterModal(true);
-                }}
-                onMouseEnter={() => setShowTooltip('starter')}
-                onMouseLeave={() => setShowTooltip('')}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/15 to-pink-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="relative z-10 font-medium">Starter</span>
-              </button>
-              
-              {/* 增强Starter Tooltip */}
-              {showTooltip === 'starter' && (
-                <div className="absolute top-full left-0 mt-3 w-80 bg-black/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 p-6 text-white z-[70] animate-in slide-in-from-top-2 duration-300">
-                  <div className="flex items-center mb-3">
-                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-3 shadow-lg shadow-purple-500/50"></div>
-                    <h4 className="font-bold text-lg bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                      {moduleDescriptions.starter.title}
-                    </h4>
-                  </div>
-                  <p className="text-sm text-white/90 leading-relaxed font-medium">
-                    {moduleDescriptions.starter.description}
-                  </p>
-                  <div className="absolute -top-2 left-6 w-4 h-4 bg-black/95 border-l border-t border-white/20 transform rotate-45"></div>
-                  
-                  <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full animate-spin-slow"></div>
-                </div>
-              )}
             </div>
           </div>
-        </div>
-        
-        {/* 中间搜索框 */}
-        <div className="flex-1 max-w-md mx-4 relative">
-          <button 
-            className={`flex items-center justify-between w-full rounded-xl px-4 py-2 transition-all duration-300 group ${
-              showPressModal 
-                ? 'bg-white/20 border-white/30 border shadow-lg' 
-                : 'bg-white/10 hover:bg-white/15'
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowPressModal(!showPressModal);
-              // 关闭其他下拉菜单
-              setShowWeeklyModal(false);
-              setShowIdeationModal(false);
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-blue-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
-            <span className="text-white/70 relative z-10">Press</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-              className={`transition-transform duration-200 relative z-10 ${showPressModal ? 'rotate-45' : ''}`}
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </button>
           
-          {/* Press下拉内容 */}
-          <div 
-            className={`absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
-              showPressModal 
-                ? 'opacity-100 scale-100 translate-y-0' 
-                : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-            }`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* 保持原有的Press内容 */}
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Latest from 706ACC</h3>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              </div>
-              
-              <div 
-                className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
-                onClick={() => window.open(tweetInfo.url, '_blank')}
+          {/* 中间搜索框 */}
+          <div className="flex-1 max-w-md mx-4 relative">
+            <button 
+              className={`flex items-center justify-between w-full rounded-xl px-4 py-2 transition-all duration-300 group ${
+                showPressModal 
+                  ? 'bg-white/20 border-white/30 border shadow-lg' 
+                  : 'bg-white/10 hover:bg-white/15'
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowPressModal(!showPressModal);
+                setShowWeeklyModal(false);
+                setShowIdeationModal(false);
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-blue-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
+              <span className="text-white/70 relative z-10">Press</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="16" 
+                height="16" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                className={`transition-transform duration-200 relative z-10 ${showPressModal ? 'rotate-45' : ''}`}
               >
-                <div className="flex items-center p-4 border-b border-gray-50">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 mr-3 flex items-center justify-center">
-                    <img 
-                      src={tweetInfo.userImage} 
-                      alt={tweetInfo.user}
-                      className="w-8 h-8 object-contain"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 flex items-center">
-                      {tweetInfo.user}
-                      <svg className="ml-1 text-blue-500" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z" />
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+            
+            {/* 保持原有的Press下拉内容 */}
+            <div 
+              className={`absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 transition-all duration-300 ease-out origin-top z-[60] ${
+                showPressModal 
+                  ? 'opacity-100 scale-100 translate-y-0' 
+                  : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+              }`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Latest from 706ACC</h3>
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                </div>
+                
+                <div 
+                  className="bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] group"
+                  onClick={() => window.open(tweetInfo.url, '_blank')}
+                >
+                  <div className="flex items-center p-4 border-b border-gray-50">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 mr-3 flex items-center justify-center">
+                      <img 
+                        src={tweetInfo.userImage} 
+                        alt={tweetInfo.user}
+                        className="w-8 h-8 object-contain"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900 flex items-center">
+                        {tweetInfo.user}
+                        <svg className="ml-1 text-blue-500" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z" />
+                        </svg>
+                      </div>
+                      <div className="text-gray-500 text-sm">@{tweetInfo.user} · {tweetInfo.date}</div>
+                    </div>
+                    <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
                       </svg>
                     </div>
-                    <div className="text-gray-500 text-sm">@{tweetInfo.user} · {tweetInfo.date}</div>
                   </div>
-                  <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7"></line>
-                      <polyline points="7 7 17 7 17 17"></polyline>
-                    </svg>
+                  
+                  <div className="p-4">
+                    <p className="text-gray-800 text-sm leading-relaxed">{tweetInfo.text}</p>
+                  </div>
+                  
+                  <div className="h-32 bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center border-t border-gray-50">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                      </div>
+                      <p className="text-sm font-medium text-gray-700">Click to view full post</p>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="p-4">
-                  <p className="text-gray-800 text-sm leading-relaxed">{tweetInfo.text}</p>
-                </div>
-                
-                <div className="h-32 bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center border-t border-gray-50">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">More updates on</span>
+                    <button 
+                      className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+                      onClick={() => window.open('https://x.com/labs706', '_blank')}
+                    >
+                      Twitter
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
                       </svg>
-                    </div>
-                    <p className="text-sm font-medium text-gray-700">Click to view full post</p>
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          
+          {/* 右侧链接和信息 */}
+          <div className="flex items-center space-x-6 relative z-10">
+            <button 
+              className="text-white hover:underline flex items-center group transition-all duration-300"
+              onClick={() => window.open('706creators.io', '_blank')}
+            >
+              <span className="group-hover:scale-105 transition-transform duration-300">Learn More</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </button>
+            
+            <div className="text-white/70 text-sm hidden lg:block hover:text-white transition-colors duration-300">COME HERE AND FIND YOURSELF</div>
+            
+            <button 
+              className="p-2 text-white hover:bg-white/10 rounded-full transition-all duration-300 hover:scale-110"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* 移动端导航栏 */}
+        <div className="md:hidden flex items-center justify-between px-4 py-3">
+          {/* 添加动态背景 */}
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-xl border-b border-white/10" />
+          
+          {/* Logo */}
+          <div className="text-white text-lg font-bold relative z-10">
+            706/acc
+          </div>
+          
+          {/* 右侧按钮组 */}
+          <div className="flex items-center space-x-3 relative z-10">
+            {/* 主题切换按钮 */}
+            <button 
+              className="p-2 text-white hover:bg-white/10 rounded-full transition-all duration-300"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+              </svg>
+            </button>
+            
+            {/* 汉堡菜单按钮 */}
+            <button 
+              className="p-2 text-white hover:bg-white/10 rounded-full transition-all duration-300"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+            >
+              <svg 
+                className={`w-6 h-6 transition-transform duration-300 ${showMobileMenu ? 'rotate-45' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                {showMobileMenu ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* 移动端下拉菜单 */}
+        <div 
+          className={`md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300 ease-out ${
+            showMobileMenu 
+              ? 'opacity-100 translate-y-0 pointer-events-auto' 
+              : 'opacity-0 -translate-y-4 pointer-events-none'
+          }`}
+        >
+          <div className="px-4 py-6 space-y-4">
+            {/* 移动端菜单项 */}
+            <div className="space-y-3">
+              <button 
+                className="w-full text-left text-white p-3 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between group"
+                onClick={() => {
+                  setShowWeeklyModal(!showWeeklyModal);
+                  setShowIdeationModal(false);
+                  setShowPressModal(false);
+                }}
+              >
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="font-medium">Weekly</span>
+                </div>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-300 ${showWeeklyModal ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
               
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">More updates on</span>
+              {/* Weekly移动端下拉内容 */}
+              <div 
+                className={`overflow-hidden transition-all duration-300 ${
+                  showWeeklyModal ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="pl-5 space-y-2">
+                  {weeklyVideos.slice(0, 2).map((video) => (
+                    <div 
+                      key={video.id}
+                      className="p-3 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
+                      onClick={() => window.open(video.url, '_blank')}
+                    >
+                      <div className="text-xs text-blue-400 font-medium mb-1">{video.tag}</div>
+                      <div className="text-sm text-white font-medium line-clamp-2">{video.title}</div>
+                      <div className="text-xs text-white/70 mt-1 line-clamp-1">{video.description}</div>
+                    </div>
+                  ))}
                   <button 
-                    className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
-                    onClick={() => window.open('https://x.com/labs706', '_blank')}
+                    className="w-full text-center text-blue-400 text-sm py-2 hover:text-blue-300 transition-colors"
+                    onClick={() => window.open('https://space.bilibili.com/263714704', '_blank')}
                   >
-                    Twitter
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
-                      <line x1="7" y1="17" x2="17" y2="7"></line>
-                      <polyline points="7 7 17 7 17 17"></polyline>
-                    </svg>
+                    查看更多 →
                   </button>
                 </div>
               </div>
+
+              <button 
+                className="w-full text-left text-white p-3 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
+                onClick={() => {
+                  setShowIdeationModal(!showIdeationModal);
+                  setShowWeeklyModal(false);
+                  setShowPressModal(false);
+                }}
+              >
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+                  <span className="font-medium">Ideation</span>
+                </div>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-300 ${showIdeationModal ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {/* Ideation移动端下拉内容 */}
+              <div 
+                className={`overflow-hidden transition-all duration-300 ${
+                  showIdeationModal ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="pl-5 space-y-2">
+                  {ideationArticles.slice(0, 2).map((article) => (
+                    <div 
+                      key={article.id}
+                      className="p-3 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
+                      onClick={() => window.open(article.url, '_blank')}
+                    >
+                      <div className="text-xs text-orange-400 font-medium mb-1">{article.tag}</div>
+                      <div className="text-sm text-white font-medium line-clamp-2">{article.title}</div>
+                      <div className="text-xs text-white/70 mt-1 line-clamp-2">{article.excerpt}</div>
+                    </div>
+                  ))}
+                  <button 
+                    className="w-full text-center text-orange-400 text-sm py-2 hover:text-orange-300 transition-colors"
+                    onClick={() => window.open('https://x.com/Labs706', '_blank')}
+                  >
+                    查看更多 →
+                  </button>
+                </div>
+              </div>
+
+              <button 
+                className="w-full text-left text-white p-3 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
+                onClick={() => {
+                  setShowStarterModal(true);
+                  setShowMobileMenu(false);
+                }}
+              >
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
+                  <span className="font-medium">Starter</span>
+                </div>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <button 
+                className="w-full text-left text-white p-3 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
+                onClick={() => {
+                  setShowPressModal(!showPressModal);
+                  setShowWeeklyModal(false);
+                  setShowIdeationModal(false);
+                }}
+              >
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                  <span className="font-medium">Press</span>
+                </div>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-300 ${showPressModal ? 'rotate-180' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {/* Press移动端下拉内容 */}
+              <div 
+                className={`overflow-hidden transition-all duration-300 ${
+                  showPressModal ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="pl-5">
+                  <div 
+                    className="p-3 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
+                    onClick={() => window.open(tweetInfo.url, '_blank')}
+                  >
+                    <div className="text-xs text-green-400 font-medium mb-1">Latest from 706ACC</div>
+                    <div className="text-sm text-white font-medium line-clamp-2">{tweetInfo.text}</div>
+                    <div className="text-xs text-white/70 mt-1">@{tweetInfo.user} · {tweetInfo.date}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* 分隔线 */}
+            <div className="border-t border-white/20 my-4"></div>
+            
+            {/* 底部链接 */}
+            <div className="space-y-3">
+              <button 
+                className="w-full text-left text-white p-3 rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-between"
+                onClick={() => {
+                  window.open('706creators.io', '_blank');
+                  setShowMobileMenu(false);
+                }}
+              >
+                <span className="font-medium">Learn More</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </button>
+              
+              <div className="text-center text-white/70 text-sm py-3">
+                COME HERE AND FIND YOURSELF
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* 右侧链接和信息 */}
-        <div className="flex items-center space-x-6 relative z-10">
-          <button 
-            className="text-white hover:underline flex items-center group transition-all duration-300"
-            onClick={() => window.open('706creators.io', '_blank')}
-          >
-            <span className="group-hover:scale-105 transition-transform duration-300">Learn More</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300">
-              <line x1="7" y1="17" x2="17" y2="7"></line>
-              <polyline points="7 7 17 7 17 17"></polyline>
-            </svg>
-          </button>
-          
-          <div className="text-white/70 text-sm hidden md:block hover:text-white transition-colors duration-300">COME HERE AND FIND YOURSELF</div>
-          
-          <button 
-            className="p-2 text-white hover:bg-white/10 rounded-full transition-all duration-300 hover:scale-110"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="5"></circle>
-              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-            </svg>
-          </button>
         </div>
       </nav>
 
